@@ -4,6 +4,13 @@ from bs4 import BeautifulSoup
 import time
 import json
 import os
+from enum import Enum
+
+class Type(Enum):
+    search = "search"
+    series = "series"
+    pubhouse = "pubhouse"
+    authors = "authors"
 
 def ParserLabirint(type,theme):
         page = 1
@@ -12,13 +19,11 @@ def ParserLabirint(type,theme):
         booktry = ""
         while(True):
                 # type = search - поиск, series - серия, pubhouse - издательство, authors - автор.
-                url = f"https://www.labirint.ru/search/{theme}/?stype=0&page={page}"
-                if(type != "search"):
-                    url = f"https://www.labirint.ru/{type}/{theme}/?page={page}"
+                url = f"https://www.labirint.ru/{type.value}/{theme}/?page={page}"
                 #Копируем страницу с нужными результатами.
                 src = requests.get(url, heders).text
                 try:
-                    os.mkdir(theme)
+                    os.mkdir(str(theme))
                 except:
                     pass
                 site = open(f"{theme}/site_HTML_{page}.HTML", encoding="utf-8", mode='w')
@@ -101,6 +106,6 @@ def Books(url, theme):
         json.dump(info_book, file, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':
-    ParserLabirint("tyre", "theme/id")
+    ParserLabirint(Type.series, 32506)
 
 
