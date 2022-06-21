@@ -17,15 +17,22 @@ def ParserLabirint(type,theme):
         heders ={
                 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"}
         booktry = ""
+
+        try:
+            os.mkdir(str(theme))
+        except:
+            pass
+        if(type == Type.search):
+            theme_old = theme.replace(" ", "%20")
+        else:
+            theme_old = theme
+
         while(True):
                 # type = search - поиск, series - серия, pubhouse - издательство, authors - автор.
-                url = f"https://www.labirint.ru/{type.value}/{theme}/?page={page}"
+                url = f"https://www.labirint.ru/{type.value}/{theme_old}/?page={page}"
                 #Копируем страницу с нужными результатами.
                 src = requests.get(url, heders).text
-                try:
-                    os.mkdir(str(theme))
-                except:
-                    pass
+
                 site = open(f"{theme}/site_HTML_{page}.HTML", encoding="utf-8", mode='w')
                 site.write(src)
                 site.close()
@@ -100,12 +107,12 @@ def Books(url, theme):
                 "Издательство ": book_publisher,
                 "Серия ": book_series,
                 "ISBN книги ": book_isbn
-            }
+            },
         )
     with open(f"{theme}/Книги по {theme}.json", "a", encoding="utf-8") as file:
         json.dump(info_book, file, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':
-    ParserLabirint(Type.series, 32506)
+    ParserLabirint(Type.search, "закат империи сша")
 
 
